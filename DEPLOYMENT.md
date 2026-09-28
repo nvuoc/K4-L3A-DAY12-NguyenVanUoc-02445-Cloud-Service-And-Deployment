@@ -18,7 +18,7 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | https://day12-agent-nvuoc.onrender.com |
+| Public URL | https://day12-agent-cq98.onrender.com |
 | Platform | Render |
 | Ngày deploy | 2026-09-28 |
 
@@ -41,18 +41,18 @@ Thay `<URL>` bằng Public URL ở trên:
 
 ```bash
 # 1. Liveness — mong đợi 200 {"status":"ok"}
-curl -i https://day12-agent-nvuoc.onrender.com/health
+curl -i https://day12-agent-cq98.onrender.com/health
 
 # 2. Readiness — mong đợi 200 {"status":"ready"} (đã nối được Redis)
-curl -i https://day12-agent-nvuoc.onrender.com/ready
+curl -i https://day12-agent-cq98.onrender.com/ready
 
 # 3. Không có API key — mong đợi 401
-curl -i -X POST https://day12-agent-nvuoc.onrender.com/ask \
+curl -i -X POST https://day12-agent-cq98.onrender.com/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Hello"}'
 
 # 4. Có API key — mong đợi 200 kèm câu trả lời
-curl -i -X POST https://day12-agent-nvuoc.onrender.com/ask \
+curl -i -X POST https://day12-agent-cq98.onrender.com/ask \
   -H "Content-Type: application/json" \
   -H "X-API-Key: $AGENT_API_KEY" \
   -H "X-User-Id: sv-test" \
@@ -60,7 +60,7 @@ curl -i -X POST https://day12-agent-nvuoc.onrender.com/ask \
 
 # 5. Rate limit — gọi 15 lần, những lần cuối phải trả 429
 for i in $(seq 1 15); do
-  curl -s -o /dev/null -w "%{http_code} " -X POST https://day12-agent-nvuoc.onrender.com/ask \
+  curl -s -o /dev/null -w "%{http_code} " -X POST https://day12-agent-cq98.onrender.com/ask \
     -H "Content-Type: application/json" \
     -H "X-API-Key: $AGENT_API_KEY" \
     -H "X-User-Id: sv-test" \
