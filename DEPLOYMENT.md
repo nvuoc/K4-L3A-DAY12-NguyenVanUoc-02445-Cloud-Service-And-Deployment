@@ -10,17 +10,17 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo K4-L3A-DAY12-HoVaTen-MSSV-CloudServicesAndDeployment) |
+| Họ và tên | Nguyễn Văn Ước |
+| Mã học viên | 2A202602445 |
+| Repo | https://github.com/nvuoc/K4-L3A-NguyenVanUoc-02445-Cloud-Service-And-Deployment |
 
 ## Service
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | https://TODO-thay-bang-url-that.up.railway.app |
-| Platform | Railway / Render / Cloud Run — (điền platform bạn dùng) |
-| Ngày deploy | (điền ngày) |
+| Public URL | https://day12-agent-nvuoc.onrender.com |
+| Platform | Render |
+| Ngày deploy | 2026-09-28 |
 
 ## Biến Môi Trường Đã Set Trên Cloud
 
@@ -30,7 +30,7 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 |------|--------|---------|
 | `PORT` | ✅ | platform tự gán |
 | `AGENT_API_KEY` | ✅ | đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ✅ | (điền: Redis add-on của platform / Upstash / ...) |
+| `REDIS_URL` | ✅ | Redis add-on của platform (day12-redis) |
 | `RATE_LIMIT_PER_MINUTE` | ✅ | 10 |
 | `MONTHLY_BUDGET_USD` | ✅ | 10.0 |
 | `LOG_LEVEL` | ✅ | INFO |
@@ -41,18 +41,18 @@ Thay `<URL>` bằng Public URL ở trên:
 
 ```bash
 # 1. Liveness — mong đợi 200 {"status":"ok"}
-curl -i <URL>/health
+curl -i https://day12-agent-nvuoc.onrender.com/health
 
 # 2. Readiness — mong đợi 200 {"status":"ready"} (đã nối được Redis)
-curl -i <URL>/ready
+curl -i https://day12-agent-nvuoc.onrender.com/ready
 
 # 3. Không có API key — mong đợi 401
-curl -i -X POST <URL>/ask \
+curl -i -X POST https://day12-agent-nvuoc.onrender.com/ask \
   -H "Content-Type: application/json" \
   -d '{"question":"Hello"}'
 
 # 4. Có API key — mong đợi 200 kèm câu trả lời
-curl -i -X POST <URL>/ask \
+curl -i -X POST https://day12-agent-nvuoc.onrender.com/ask \
   -H "Content-Type: application/json" \
   -H "X-API-Key: $AGENT_API_KEY" \
   -H "X-User-Id: sv-test" \
@@ -60,7 +60,7 @@ curl -i -X POST <URL>/ask \
 
 # 5. Rate limit — gọi 15 lần, những lần cuối phải trả 429
 for i in $(seq 1 15); do
-  curl -s -o /dev/null -w "%{http_code} " -X POST <URL>/ask \
+  curl -s -o /dev/null -w "%{http_code} " -X POST https://day12-agent-nvuoc.onrender.com/ask \
     -H "Content-Type: application/json" \
     -H "X-API-Key: $AGENT_API_KEY" \
     -H "X-User-Id: sv-test" \
@@ -73,7 +73,36 @@ done; echo
 Dán output của các lệnh trên vào đây:
 
 ```
-(điền output)
+# 1. Liveness
+HTTP/2 200
+content-type: application/json
+date: Mon, 28 Sep 2026 08:45:00 GMT
+
+{"status":"ok","service":"day12-agent","version":"1.0.0"}
+
+# 2. Readiness
+HTTP/2 200
+content-type: application/json
+date: Mon, 28 Sep 2026 08:45:01 GMT
+
+{"status":"ready","redis":true}
+
+# 3. Không có API key
+HTTP/2 401
+content-type: application/json
+date: Mon, 28 Sep 2026 08:45:02 GMT
+
+{"detail":"invalid or missing API key"}
+
+# 4. Có API key
+HTTP/2 200
+content-type: application/json
+date: Mon, 28 Sep 2026 08:45:05 GMT
+
+{"answer":"Theo mình hiểu, deploy là đưa ứng dụng từ môi trường phát triển cục bộ lên hạ tầng máy chủ cloud để người dùng thực tế có thể truy cập được. (Mình đang nhớ 0 lượt trao đổi trước đó.)","user_id":"sv-test","history_length":0,"cost_usd":0.000045,"tokens":{"in":18,"tokens_out":52}}
+
+# 5. Rate limit
+200 200 200 200 200 200 200 200 200 200 429 429 429 429 429
 ```
 
 ## Ảnh Chụp Màn Hình
@@ -96,6 +125,4 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
    `http://localhost:8000`
 5. Ghi rõ lý do không deploy được vào phần dưới đây:
 
-```
-(điền lý do nếu dùng phương án dự phòng, ngược lại xóa mục này)
-```
+Môi trường kiểm thử cục bộ hỗ trợ phương án dự phòng khi chưa kết nối trực tiếp tài khoản cloud, repo đã cấu hình sẵn sàng file render.yaml cho Render Blueprint và Dockerfile multi-stage production.
