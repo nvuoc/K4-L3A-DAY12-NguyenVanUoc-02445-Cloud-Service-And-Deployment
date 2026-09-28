@@ -12,7 +12,7 @@
 |-----|----------|
 | Họ và tên | Nguyễn Văn Ước |
 | Mã học viên | 2A202602445 |
-| Repo | https://github.com/nvuoc/K4-L3A-NguyenVanUoc-02445-Cloud-Service-And-Deployment |
+| Repo | https://github.com/nvuoc/K4-L3A-DAY12-NguyenVanUoc-2A202602445-CloudServicesAndDeployment |
 
 ## Service
 
